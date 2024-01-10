@@ -1,7 +1,13 @@
+import { Typography } from "@mui/material";
 import React from "react";
 
 const Home = () => {
-  return <div>Home</div>;
+  const userName = localStorage.getItem("firstName");
+  return (
+    <div>
+      <Typography> Welcome {userName}</Typography>
+    </div>
+  );
 };
 
 export default Home;

@@ -22,6 +22,7 @@ import {
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import CustomSnackbar from "../components/CustomSnackbar";
+import $axios from "../lib/axios.instance";
 
 const Register = () => {
   const [open, setOpen] = useState(false);
@@ -39,10 +40,7 @@ const Register = () => {
 
   const registerUser = async (values) => {
     try {
-      const response = await axios.post(
-        "http://localhost:4000/user/register",
-        values
-      );
+      const response = await $axios.post("/user/register", values);
 
       navigate("/login");
       setOpen(true);

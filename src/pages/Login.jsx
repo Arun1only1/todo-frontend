@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { Formik } from "formik";
-import * as Yup from "yup";
 import { Button, FormControl, TextField, Typography } from "@mui/material";
+import { Formik } from "formik";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import * as Yup from "yup";
+import $axios from "../lib/axios.instance";
 
 const Login = () => {
   const [error, setError] = useState("");
@@ -11,15 +11,14 @@ const Login = () => {
 
   const loginUser = async (values) => {
     try {
-      const response = await axios.post(
-        "http://localhost:4000/user/login",
-        values
-      );
+      const response = await $axios.post("/user/login", values);
+
+      localStorage.setItem("accessToken", response?.data?.accessToken);
+      localStorage.setItem("firstName", response?.data?.user?.firstName);
 
       navigate("/");
     } catch (error) {
-      setError(error.response.data.message);
-      console.log(error.response.data.message);
+      setError(error.response?.data?.message);
     }
   };
   return (
