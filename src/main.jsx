@@ -1,29 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
-import "./App.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Register from "./pages/Register";
-import Login from "./pages/Login";
-import Home from "./pages/Home";
+import "./App.css";
+import "./index.css";
+import { guestRoutes } from "./routes/guestRoutes";
+import { mainRoutes } from "./routes/mainRoutes";
+import { QueryClient, QueryClientProvider } from "react-query";
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Home />,
-  },
-  {
-    path: "/register",
-    element: <Register />,
-  },
-  {
-    path: "/login",
-    element: <Login />,
-  },
-]);
+const router = createBrowserRouter([...mainRoutes, ...guestRoutes]);
+// Create a client
+const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
+  <QueryClientProvider client={queryClient}>
     <RouterProvider router={router} />
-  </React.StrictMode>
+  </QueryClientProvider>
 );
