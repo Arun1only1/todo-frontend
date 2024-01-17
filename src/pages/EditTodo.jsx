@@ -1,7 +1,7 @@
 import React from "react";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import $axios from "../lib/axios.instance";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Button,
   CircularProgress,
@@ -18,9 +18,11 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 const EditTodo = () => {
   const params = useParams();
+  const navigate = useNavigate();
   // TODO: dayjs library
   const currentDate = dayjs().startOf("day");
 
+  // get todo details
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["todo-details"],
     queryFn: async () => {
@@ -28,18 +30,30 @@ const EditTodo = () => {
     },
   });
 
+  // update todo
+
+  const { mutate, isLoading: updateTodoLoading } = useMutation({
+    mutationKey: ["update-todo"],
+    mutationFn: async (newValues) => {
+      return $axios.put(`todo/update/${params.id}`, newValues);
+    },
+    onSuccess: () => {
+      navigate("/");
+    },
+  });
+
   const todoDetails = data?.data;
 
-  if (isLoading) {
+  if (isLoading || updateTodoLoading) {
     return <CircularProgress />;
   }
   return (
     <Formik
-      enableReinitialize={true}
+      enableReinitialize
       initialValues={{
-        title: todoDetails?.title,
-        description: todoDetails?.description,
-        date: todoDetails?.date,
+        title: todoDetails?.title || "",
+        description: todoDetails?.description || "",
+        date: todoDetails?.date || "",
       }}
       validationSchema={Yup.object({
         title: Yup.string()
@@ -57,7 +71,7 @@ const EditTodo = () => {
           .required("Date is required."),
       })}
       onSubmit={(values) => {
-        console.log(values);
+        mutate(values);
       }}
     >
       {({ getFieldProps, handleSubmit, errors, touched, setFieldValue }) => (

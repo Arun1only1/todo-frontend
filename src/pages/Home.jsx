@@ -60,6 +60,11 @@ const Home = () => {
   });
   const todoList = data?.data;
 
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/login");
+  };
+
   if (isLoading || deleteLoading) {
     return <CircularProgress color="secondary" />;
   }
@@ -71,7 +76,18 @@ const Home = () => {
   }
 
   return (
-    <>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        gap: "3rem",
+      }}
+    >
+      <Button variant="contained" onClick={handleLogout}>
+        Logout
+      </Button>
       <Popover
         id={id}
         open={open}
@@ -175,7 +191,7 @@ const Home = () => {
           );
         })}
       </Grid>
-    </>
+    </div>
   );
 };
 
